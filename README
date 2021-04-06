@@ -1,0 +1,46 @@
+Code accompanying the TwitterAAE v1 release.
+
+If you use this code or data, please cite the following paper:
+
+S. Blodgett, L. Green, and B. O'Connor. Demographic Dialectal Variation
+in Social Media: A Case Study of African-American English. Proceedings of EMNLP.
+Austin. 2016.
+
+The following paper evaluates the ensemble English language identifier:
+
+S. Blodgett, J. Wei, and B. O'Connor.  A Dataset and Classifier for Recognizing
+Social Media English.  3rd Workshop on Noisy User-generated Text (WNUT) at
+EMNLP 2017. 
+
+Website: http://slanglab.cs.umass.edu/TwitterLangID/
+
+************************
+
+Tweets can be classified as a major world language with our
+demographic-assisted ensemble classifier with classify.py.  It uses the Python
+module langid.py, which can be downloaded here
+(https://github.com/saffsd/langid.py) or installed using pip (pip install
+langid).  As described in Blodgett et al. 2016, it classifies text as English
+if either langid.py or the demographic model indicate it is English.
+
+The demographic model's full vocabulary and count tables (averaged over the 
+last 50 Gibbs sampling iterations) are in vocab.txt and model_count_table.txt, 
+respectively. The demographic predictions for a tweet can be calculated by 
+loading the model with predict.load_model(model_count_table) and calling 
+predict.predict(tweet). The model only needs to be loaded once per session.
+
+Note that the demographic language model IS NOT AN AUTHOR DEMOGRAPHIC
+CLASSIFIER.  It calculates the posterior *proportion* of tokens associated with
+the demographic-aligned languages: for example, it might tell you that a large
+portion of a message likely uses AAE vocabulary.  predict.predict(tweet)
+returns a vector of posterior expected proportions
+    E[ TokenCount(z=k)/TweetLength | TweetText ]
+over four demographic categories k in {Black, Hisp, Asian, White}.  As
+described in the papers, the non-Asian dimensions correspond to a broad set of
+English.
+
+Tokenizing for the paper was done using twokenize.py and emoji detection was
+done with emoji.py; both are provided.
+
+The evaluation of our annotated dataset for the paper was done with evaluate.py
+in the research/ directory; we include it for replicability.
